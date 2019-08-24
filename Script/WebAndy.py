@@ -198,9 +198,9 @@ def csvDaemon(filePath):
                 logging.info(str(name) + " " + number + " " + address + " " + email)
                 try:
                     success = whereisBob(name, number, address, email, noteThis, False)
-        except Exception:
-            logging.exception("Whoops! Something went wrong.")
-            success = [False, "Mysterious error! Whoops."]
+                except Exception:
+                    logging.exception("Whoops! Something went wrong.")
+                    success = [False, "Mysterious error! Whoops."]
                 if not success[0] and success[1] != "POSSIBLE DUPLICATE: Two results were SUSPICIOUSLY similar! We couldn't tell the difference.":
                     try:
                         success = whereisBob(name, number, address, email, noteThis, True)
