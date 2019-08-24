@@ -207,8 +207,8 @@ def csvDaemon(filePath):
                     except Exception:
                         logging.exception("Whoops! Something went wrong.")
                         success = [False, "Mysterious error! Whoops."]
-            # we'll try it a second time, just in case something timed out
-            results.append([success[0], name, number, address, email, noteThis, success[1]])
+                        # we'll try it a second time, just in case something timed out
+                results.append([success[0], name, number, address, email, noteThis, success[1]])
     # and now run some statistics
     results.sort()  # brings the missing ones to the front.
     falseCount = 0
