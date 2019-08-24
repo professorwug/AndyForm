@@ -209,22 +209,22 @@ def csvDaemon(filePath):
                         success = [False, "Mysterious error! Whoops."]
             # we'll try it a second time, just in case something timed out
             results.append([success[0], name, number, address, email, noteThis, success[1]])
-# and now run some statistics
-results.sort()  # brings the missing ones to the front.
+    # and now run some statistics
+    results.sort()  # brings the missing ones to the front.
     falseCount = 0
-        for i in results:
-            reportCard += '''<tr class = "classcode"><td> TrueValue </td><td>Dan Speed</td><td>banana phone</td> <td>The Suburban Hotel</td><td> speedaway@dan.org </td><td> NOTES GO HERE </td></tr>'''.replace(
-                                                                                                                                                                                                                 "TrueValue", str(i[-1])).replace("Dan Speed", ' '.join(i[1])).replace('banana phone', i[2]).replace(
-                                                                                                                                                                                                                                                                                                                     "The Suburban Hotel", i[3]).replace("speedaway@dan.org", i[4]).replace("classcode",
-                                                                                                                                                                                                                                                                                                                                                                                            str(i[0]).lower()).replace(
-                                                                                                                                                                                                                                                                                                                                                                                                                       "NOTES GO HERE", i[5])
-                                                                                                                                                                                                                                                                                                                                                                                                                       if not i[0]:
-                                                                                                                                                                                                                                                                                                                                                                                                                           falseCount += 1
-        reportCard = reportCard.replace("RIGHTNOW", str(now.ctime())).replace("SUCCESSFULPEOPLE",
-                                                                              str(len(results) - falseCount)).replace(
-                                                                                                                      "MISSINGPEOPLE", str(falseCount))
-                                                                                                                      reportCard += "</table></body></html>"
-                                                                                                                      browseLocal(reportCard)
+    for i in results:
+        reportCard += '''<tr class = "classcode"><td> TrueValue </td><td>Dan Speed</td><td>banana phone</td> <td>The Suburban Hotel</td><td> speedaway@dan.org </td><td> NOTES GO HERE </td></tr>'''.replace(
+                                                                                                                                                                                                             "TrueValue", str(i[-1])).replace("Dan Speed", ' '.join(i[1])).replace('banana phone', i[2]).replace(
+                                                                                                                                                                                                                                                                                                                 "The Suburban Hotel", i[3]).replace("speedaway@dan.org", i[4]).replace("classcode",
+                                                                                                                                                                                                                                                                                                                                                                                        str(i[0]).lower()).replace(
+                                                                                                                                                                                                                                                                                                                                                                                                                   "NOTES GO HERE", i[5])
+                                                                                                                                                                                                                                                                                                                                                                                                                   if not i[0]:
+                                                                                                                                                                                                                                                                                                                                                                                                                       falseCount += 1
+    reportCard = reportCard.replace("RIGHTNOW", str(now.ctime())).replace("SUCCESSFULPEOPLE",
+                                                                          str(len(results) - falseCount)).replace(
+                                                                                                                  "MISSINGPEOPLE", str(falseCount))
+                                                                                                                  reportCard += "</table></body></html>"
+                                                                                                                  browseLocal(reportCard)
 
 
 def login():
@@ -295,7 +295,7 @@ def initialize():
         
         WebDriverWait(driver, 10).until(EC.title_contains("Quick Mark"))
 
-survey = driver.find_element_by_id(
+    survey = driver.find_element_by_id(
                                    "ctl00_ContentPlaceHolderVANPage_WizardControl_VANDetailsItemQuickMarkType_VANInputItemDetailsItemQuickMarkType_QuickMarkType_0")
     survey.click()
     through = driver.find_element_by_id(
@@ -334,10 +334,10 @@ def whereisBob(name, number, address, email, noteThis, nationalLook):
 
     logging.info(unicodedata.normalize('NFKD',driver.title).encode("ascii","replace"))
 
-# enable (or disable) search of all people
-if nationalLook:
-    allPeople = driver.find_element_by_id("ctl00_ContentPlaceHolderVANPage_ctl00_RadioButtonMyActivist_0")
-    webdriver.ActionChains(driver).move_to_element(allPeople).click(allPeople).perform()
+    # enable (or disable) search of all people
+    if nationalLook:
+        allPeople = driver.find_element_by_id("ctl00_ContentPlaceHolderVANPage_ctl00_RadioButtonMyActivist_0")
+        webdriver.ActionChains(driver).move_to_element(allPeople).click(allPeople).perform()
     else:
         allPeople = driver.find_element_by_id("ctl00_ContentPlaceHolderVANPage_ctl00_RadioButtonMyActivist_1")
         webdriver.ActionChains(driver).move_to_element(allPeople).click(allPeople).perform()
@@ -349,67 +349,67 @@ if nationalLook:
     firstName.clear()
     firstName.send_keys(name[0])
 
-search = driver.find_element_by_id("ctl00_ContentPlaceHolderVANPage_ctl00_RefreshFilterButton")
-webdriver.ActionChains(driver).move_to_element(search).click(search).perform()
-time.sleep(2)
+    search = driver.find_element_by_id("ctl00_ContentPlaceHolderVANPage_ctl00_RefreshFilterButton")
+    webdriver.ActionChains(driver).move_to_element(search).click(search).perform()
+    time.sleep(2)
 
-table = driver.find_element_by_id('ctl00_ContentPlaceHolderVANPage_gvList')
-tbody = table.find_elements_by_tag_name('tbody')[0]
-rows = tbody.find_elements_by_tag_name('tr')
-logging.info(unicodedata.normalize('NFKD',str(rows)).encode("ascii","replace"))
-if (len(rows) == 0 or len(rows[0].find_elements_by_tag_name('td')) < 2):  # the latter case is for the one row that says "person not found"
-    logging.info("No one found.")
-    if nationalLook:
-        returnVal = personMaker(name, number, address, email, noteThis)
+    table = driver.find_element_by_id('ctl00_ContentPlaceHolderVANPage_gvList')
+    tbody = table.find_elements_by_tag_name('tbody')[0]
+    rows = tbody.find_elements_by_tag_name('tr')
+    logging.info(unicodedata.normalize('NFKD',str(rows)).encode("ascii","replace"))
+    if (len(rows) == 0 or len(rows[0].find_elements_by_tag_name('td')) < 2):  # the latter case is for the one row that says "person not found"
+        logging.info("No one found.")
+        if nationalLook:
+            returnVal = personMaker(name, number, address, email, noteThis)
         else:
             returnVal = [False,'Try again, with nationalLook enabled.']
-    return returnVal
-auspiciousPersons = []
+        return returnVal
+    auspiciousPersons = []
 
-for row in rows:
-    # Get the columns (all the column 2)
-    currName = row.find_elements_by_tag_name('td')[1].text  # note: index start from 0, 1 is col 2
-    currName = currName.replace(',', '').split(' ')
-    currAddress = row.find_elements_by_tag_name('td')[2].text
-    currCity = row.find_elements_by_tag_name('td')[3].text
-    currState = row.find_elements_by_tag_name('td')[4].text
-    currPhone = row.find_elements_by_tag_name('td')[6].text
-    currPhone = ''.join(re.findall('\d+', currPhone))
-    currEmail = row.find_elements_by_tag_name('td')[7].text
-    logging.info(unicodedata.normalize('NFKD',currName).encode("ascii","replace") + " " + unicodedata.normalize('NFKD',currAddress).encode("ascii","replace") + " " + unicodedata.normalize('NFKD',currCity).encode("ascii","replace") + " " + unicodedata.normalize('NFKD',currState).encode("ascii","replace") + " " + unicodedata.normalize('NFKD',currPhone).encode("ascii","replace") + " " + unicodedata.normalize('NFKD',currEmail).encode("ascii","replace"))  # prints text from the element
-                      needsPhone = False
-                          needsEmail = False
-                              score = doesItMatch(name, number, address, email, currName, currAddress, currCity, currState, currPhone,
-                                                  currEmail)
-                                                      if ratio(currEmail, email) < 0.7 and email:
-                                                          needsEmail = True
-                                                              if ratio(currPhone, number) < 0.7 and number:
-                                                                  needsPhone = True
-                                                                      auspiciousPersons.append([score, rows.index(row), currName, needsPhone, needsEmail])
-                                                                      logging.info("we have a score of " + " " + str(score))
-                                                                  logging.info(unicodedata.normalize('NFKD',str(auspiciousPersons)).encode("ascii","replace"))
-auspiciousPersons.sort()
-bestCandidate = auspiciousPersons[-1]
-try:
-    if bestCandidate[0] < 10:
-        logging.info("No one scored highly enough.")
-        return [False, "No one scored highly enough."]
-        if bestCandidate[0] - auspiciousPersons[-2][0] < 5:  # There's a chance that there's only one matching person,
-            logging.info("Too similar! Possible duplicate...")
-            return [False,
-                    "POSSIBLE DUPLICATE: Two results were SUSPICIOUSLY similar! We couldn't tell the difference."]
+    for row in rows:
+        # Get the columns (all the column 2)
+        currName = row.find_elements_by_tag_name('td')[1].text  # note: index start from 0, 1 is col 2
+        currName = currName.replace(',', '').split(' ')
+        currAddress = row.find_elements_by_tag_name('td')[2].text
+        currCity = row.find_elements_by_tag_name('td')[3].text
+        currState = row.find_elements_by_tag_name('td')[4].text
+        currPhone = row.find_elements_by_tag_name('td')[6].text
+        currPhone = ''.join(re.findall('\d+', currPhone))
+        currEmail = row.find_elements_by_tag_name('td')[7].text
+        logging.info(unicodedata.normalize('NFKD',currName).encode("ascii","replace") + " " + unicodedata.normalize('NFKD',currAddress).encode("ascii","replace") + " " + unicodedata.normalize('NFKD',currCity).encode("ascii","replace") + " " + unicodedata.normalize('NFKD',currState).encode("ascii","replace") + " " + unicodedata.normalize('NFKD',currPhone).encode("ascii","replace") + " " + unicodedata.normalize('NFKD',currEmail).encode("ascii","replace"))  # prints text from the element
+                          needsPhone = False
+                              needsEmail = False
+                                  score = doesItMatch(name, number, address, email, currName, currAddress, currCity, currState, currPhone,
+                                                      currEmail)
+                                                          if ratio(currEmail, email) < 0.7 and email:
+                                                              needsEmail = True
+                                                                  if ratio(currPhone, number) < 0.7 and number:
+                                                                      needsPhone = True
+                                                                          auspiciousPersons.append([score, rows.index(row), currName, needsPhone, needsEmail])
+                                                                          logging.info("we have a score of " + " " + str(score))
+                                                                      logging.info(unicodedata.normalize('NFKD',str(auspiciousPersons)).encode("ascii","replace"))
+    auspiciousPersons.sort()
+    bestCandidate = auspiciousPersons[-1]
+    try:
+        if bestCandidate[0] < 10:
+            logging.info("No one scored highly enough.")
+            return [False, "No one scored highly enough."]
+            if bestCandidate[0] - auspiciousPersons[-2][0] < 5:  # There's a chance that there's only one matching person,
+                logging.info("Too similar! Possible duplicate...")
+                return [False,
+                        "POSSIBLE DUPLICATE: Two results were SUSPICIOUSLY similar! We couldn't tell the difference."]
     except:
         if bestCandidate[0] < 10:  # possibly of dubious similarity
             logging.info("No one scored really high.")
             return [False, "No one scored highly enough"]
-# Select response
-yesDial = Select(rows[bestCandidate[1]].find_elements_by_tag_name('select')[0])
-yesDial.select_by_visible_text(surveyName)
+    # Select response
+    yesDial = Select(rows[bestCandidate[1]].find_elements_by_tag_name('select')[0])
+    yesDial.select_by_visible_text(surveyName)
 
-search = driver.find_element_by_id("ctl00_ContentPlaceHolderVANPage_ctl00_RefreshFilterButton")
-# search.click() #and save the results with another click of the search button
-webdriver.ActionChains(driver).move_to_element(search).click(search).perform()
-    
+    search = driver.find_element_by_id("ctl00_ContentPlaceHolderVANPage_ctl00_RefreshFilterButton")
+    # search.click() #and save the results with another click of the search button
+    webdriver.ActionChains(driver).move_to_element(search).click(search).perform()
+
     time.sleep(2)
     notes = "Success! "
     if bestCandidate[3] or bestCandidate[3] or noteThis:
@@ -427,10 +427,10 @@ webdriver.ActionChains(driver).move_to_element(search).click(search).perform()
                                               if noteThis:
                                                   notes += " some notes..."
 
-logging.info("Bob has been found! Yay!")
-return [True, notes]
-# surveyButton = driver.find_element_by_id("ctl00_ContentPlaceHolderVANPage_ctl38_UpdatePanel_SurveyQuestions_EID295C3E9B_ExpandButton")
-# surveyButton.click()
+    logging.info("Bob has been found! Yay!")
+    return [True, notes]
+    # surveyButton = driver.find_element_by_id("ctl00_ContentPlaceHolderVANPage_ctl38_UpdatePanel_SurveyQuestions_EID295C3E9B_ExpandButton")
+    # surveyButton.click()
 
 
 def addNotes(link, notes, name):
@@ -553,14 +553,14 @@ def infoAdder(needsEmail, needsPhone, link, email, number, name, noteThis):
                     alert_obj = driver.switch_to.alert  # is it an actual alert?
                     alert_obj.send_keys(uue007')  # press the enter key to escape the alert box that should come up.
                     needsEmail = False'''
-                        logging.info("loop finished! Heading home!")
-                        primaryButton.click()
-                        alert_obj = driver.switch_to.alert  # is it an actual alert?
-                            alert_obj.accept()  # press the enter key to escape the alert box that should come up.
-                            driver.get("https://members.lcv.org/QuickLookup.aspx?ReturnToList=1")  # it's the cheap way out
-                            WebDriverWait(driver, 10).until(EC.title_contains("Quick Mark"))
-                            logging.info('infoAdd out!')
-                            return True
+        logging.info("loop finished! Heading home!")
+        primaryButton.click()
+        alert_obj = driver.switch_to.alert  # is it an actual alert?
+            alert_obj.accept()  # press the enter key to escape the alert box that should come up.
+            driver.get("https://members.lcv.org/QuickLookup.aspx?ReturnToList=1")  # it's the cheap way out
+            WebDriverWait(driver, 10).until(EC.title_contains("Quick Mark"))
+            logging.info('infoAdd out!')
+            return True
 
 
 def addressing(address):
@@ -619,53 +619,53 @@ def personMaker(name, number, address, email, noteThis):
                                                           return [False, 'No one found. You chose to enter this one manually.']
                                                       print("person maker actived!")
                                                       parsedAddress = addressing(address)
-print(parsedAddress)
-newPerson = driver.find_elements_by_partial_link_text('Add New Person')[0]
-webdriver.ActionChains(driver).move_to_element(newPerson).click(newPerson).perform()
-WebDriverWait(driver, 10).until(EC.title_contains("New Person"))
-if "address1" in parsedAddress[0]:
-    street = driver.find_element_by_id(
-                                       "ctl00_ContentPlaceHolderVANPage_VanInputItem639_VanInputItem639AddressLine1")
-        street.clear()
-        street.send_keys(parsedAddress[0]["address1"])
-                                       elif "address2" in parsedAddress[0]:
+    print(parsedAddress)
+    newPerson = driver.find_elements_by_partial_link_text('Add New Person')[0]
+    webdriver.ActionChains(driver).move_to_element(newPerson).click(newPerson).perform()
+    WebDriverWait(driver, 10).until(EC.title_contains("New Person"))
+    if "address1" in parsedAddress[0]:
         street = driver.find_element_by_id(
                                            "ctl00_ContentPlaceHolderVANPage_VanInputItem639_VanInputItem639AddressLine1")
-                                           street.clear()
-                                           street.send_keys(parsedAddress[0]["address2"])
-                                           if "city" in parsedAddress[0]:
-                                               city = driver.find_element_by_id("ctl00_ContentPlaceHolderVANPage_VanInputItem639_VanInputItem639City")
-                                               city.clear()
-                                               city.send_keys(parsedAddress[0]["city"])
-                                           if "state" in parsedAddress[0]:
-                                               state = driver.find_element_by_id("ctl00_ContentPlaceHolderVANPage_VanInputItem639_VanInputItem639State")
-                                               state.clear()
-                                               state.send_keys(parsedAddress[0]["state"])
-if "zip_code" in parsedAddress[0]:
-    zip = driver.find_element_by_id("ctl00_ContentPlaceHolderVANPage_VanInputItem639_VanInputItem639Zip5")
-    zip.clear()
-    if len(parsedAddress[0]["zip_code"]) == 5:
-        zip.send_keys(parsedAddress[0]["zip_code"])
-    if len(number) == 10:
-        # phoneBox = driver.find_elements_by_id("ctl00_ContentPlaceHolderVANPage_VanInputItem642_VanInputItem642_phone_VanInputItem642_phone_VanInputItem642Input")[0]
-        # new way
-        theLabel = driver.find_element_by_xpath("//label[contains(text(),'Home Phone')]")
-        theParent = theLabel.find_element_by_xpath('..')
-        phoneBox = theParent.find_element_by_tag_name("input")
-        webdriver.ActionChains(driver).move_to_element(phoneBox).click(phoneBox).send_keys(number).perform()
-    if email != "":
-        theLabel = driver.find_element_by_xpath("//label[contains(text(),'Email')]")
-        theParent = theLabel.find_element_by_xpath('..')
-        currentBox = theParent.find_element_by_tag_name("input")
-        webdriver.ActionChains(driver).move_to_element(currentBox).click(currentBox).send_keys(email).perform()
-    try:
-        saveIt = driver.find_element_by_id("ctl00_ContentPlaceHolderVANPage_ButtonNext")
-        webdriver.ActionChains(driver).move_to_element(saveIt).click(saveIt).perform()
-    except Exception:
-        nextButton = driver.find_element_by_id("ctl00_ContentPlaceHolderVANPage_ctl00_RefreshFilterButton")
-        webdriver.ActionChains(driver).move_to_element(nextButton).click(nextButton).perform()
-whereisBob(name, number, address, email, noteThis, False)
-return [True, "Added to VAN as a brand NEW PERSON!"]
+            street.clear()
+            street.send_keys(parsedAddress[0]["address1"])
+                                           elif "address2" in parsedAddress[0]:
+            street = driver.find_element_by_id(
+                                               "ctl00_ContentPlaceHolderVANPage_VanInputItem639_VanInputItem639AddressLine1")
+                                               street.clear()
+                                               street.send_keys(parsedAddress[0]["address2"])
+                                               if "city" in parsedAddress[0]:
+                                                   city = driver.find_element_by_id("ctl00_ContentPlaceHolderVANPage_VanInputItem639_VanInputItem639City")
+                                                   city.clear()
+                                                   city.send_keys(parsedAddress[0]["city"])
+                                               if "state" in parsedAddress[0]:
+                                                   state = driver.find_element_by_id("ctl00_ContentPlaceHolderVANPage_VanInputItem639_VanInputItem639State")
+                                                   state.clear()
+                                                   state.send_keys(parsedAddress[0]["state"])
+    if "zip_code" in parsedAddress[0]:
+        zip = driver.find_element_by_id("ctl00_ContentPlaceHolderVANPage_VanInputItem639_VanInputItem639Zip5")
+        zip.clear()
+        if len(parsedAddress[0]["zip_code"]) == 5:
+            zip.send_keys(parsedAddress[0]["zip_code"])
+        if len(number) == 10:
+            # phoneBox = driver.find_elements_by_id("ctl00_ContentPlaceHolderVANPage_VanInputItem642_VanInputItem642_phone_VanInputItem642_phone_VanInputItem642Input")[0]
+            # new way
+            theLabel = driver.find_element_by_xpath("//label[contains(text(),'Home Phone')]")
+            theParent = theLabel.find_element_by_xpath('..')
+            phoneBox = theParent.find_element_by_tag_name("input")
+            webdriver.ActionChains(driver).move_to_element(phoneBox).click(phoneBox).send_keys(number).perform()
+        if email != "":
+            theLabel = driver.find_element_by_xpath("//label[contains(text(),'Email')]")
+            theParent = theLabel.find_element_by_xpath('..')
+            currentBox = theParent.find_element_by_tag_name("input")
+            webdriver.ActionChains(driver).move_to_element(currentBox).click(currentBox).send_keys(email).perform()
+        try:
+            saveIt = driver.find_element_by_id("ctl00_ContentPlaceHolderVANPage_ButtonNext")
+            webdriver.ActionChains(driver).move_to_element(saveIt).click(saveIt).perform()
+        except Exception:
+            nextButton = driver.find_element_by_id("ctl00_ContentPlaceHolderVANPage_ctl00_RefreshFilterButton")
+            webdriver.ActionChains(driver).move_to_element(nextButton).click(nextButton).perform()
+    whereisBob(name, number, address, email, noteThis, False)
+    return [True, "Added to VAN as a brand NEW PERSON!"]
 
 
 theySay = sys.argv
