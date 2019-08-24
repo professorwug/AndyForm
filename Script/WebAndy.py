@@ -176,7 +176,7 @@ def csvDaemon(filePath):
         results = []
         for row in readCSV:
             if row[0].strip() != '' and row[0] != 'Name':
-                logging.info(unicodedata.normalize('NFKD',row).encode("ascii","replace"))
+                logging.info(unicodedata.normalize('NFKD',str(row)).encode("ascii","replace"))
                 name = row[0].replace('\n', ' ')
                 name = name.strip()
                 name = name.split(' ')
