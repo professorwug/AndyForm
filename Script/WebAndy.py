@@ -320,9 +320,7 @@ def whereisBob(name, number, address, email, noteThis, nationalLook):
         logging.info("We have driver title: " + driver.title)
         logging.debug("Initializing ; )")
         initialize()  # loads the quick mark page, if not loaded
-
     logging.info(unicodedata.normalize('NFKD',driver.title).encode("ascii","replace"))
-
     # enable (or disable) search of all people
     if nationalLook:
         allPeople = driver.find_element_by_id("ctl00_ContentPlaceHolderVANPage_ctl00_RadioButtonMyActivist_0")
@@ -366,27 +364,25 @@ def whereisBob(name, number, address, email, noteThis, nationalLook):
         currPhone = ''.join(re.findall('\d+', currPhone))
         currEmail = row.find_elements_by_tag_name('td')[7].text
         logging.info(unicodedata.normalize('NFKD',currName).encode("ascii","replace") + " " + unicodedata.normalize('NFKD',currAddress).encode("ascii","replace") + " " + unicodedata.normalize('NFKD',currCity).encode("ascii","replace") + " " + unicodedata.normalize('NFKD',currState).encode("ascii","replace") + " " + unicodedata.normalize('NFKD',currPhone).encode("ascii","replace") + " " + unicodedata.normalize('NFKD',currEmail).encode("ascii","replace"))  # prints text from the element
-                          needsPhone = False
-                              needsEmail = False
-                                  score = doesItMatch(name, number, address, email, currName, currAddress, currCity, currState, currPhone,
-                                                      currEmail)
-                                                          if ratio(currEmail, email) < 0.7 and email:
-                                                              needsEmail = True
-                                                                  if ratio(currPhone, number) < 0.7 and number:
-                                                                      needsPhone = True
-                                                                          auspiciousPersons.append([score, rows.index(row), currName, needsPhone, needsEmail])
-                                                                          logging.info("we have a score of " + " " + str(score))
-                                                                      logging.info(unicodedata.normalize('NFKD',str(auspiciousPersons)).encode("ascii","replace"))
+        needsPhone = False
+        needsEmail = False
+        score = doesItMatch(name, number, address, email, currName, currAddress, currCity, currState, currPhone,currEmail)
+        if ratio(currEmail, email) < 0.7 and email:
+              needsEmail = True
+        if ratio(currPhone, number) < 0.7 and number:
+              needsPhone = True
+        auspiciousPersons.append([score, rows.index(row), currName, needsPhone, needsEmail])
+        logging.info("we have a score of " + " " + str(score))
+    logging.info(unicodedata.normalize('NFKD',str(auspiciousPersons)).encode("ascii","replace"))
     auspiciousPersons.sort()
     bestCandidate = auspiciousPersons[-1]
     try:
         if bestCandidate[0] < 10:
             logging.info("No one scored highly enough.")
             return [False, "No one scored highly enough."]
-            if bestCandidate[0] - auspiciousPersons[-2][0] < 5:  # There's a chance that there's only one matching person,
-                logging.info("Too similar! Possible duplicate...")
-                return [False,
-                        "POSSIBLE DUPLICATE: Two results were SUSPICIOUSLY similar! We couldn't tell the difference."]
+        if bestCandidate[0] - auspiciousPersons[-2][0] < 5:  # There's a chance that there's only one matching person,
+            logging.info("Too similar! Possible duplicate...")
+            return [False,"POSSIBLE DUPLICATE: Two results were SUSPICIOUSLY similar! We couldn't tell the difference."]
     except:
         if bestCandidate[0] < 10:  # possibly of dubious similarity
             logging.info("No one scored really high.")
@@ -394,28 +390,24 @@ def whereisBob(name, number, address, email, noteThis, nationalLook):
     # Select response
     yesDial = Select(rows[bestCandidate[1]].find_elements_by_tag_name('select')[0])
     yesDial.select_by_visible_text(surveyName)
-
     search = driver.find_element_by_id("ctl00_ContentPlaceHolderVANPage_ctl00_RefreshFilterButton")
     # search.click() #and save the results with another click of the search button
     webdriver.ActionChains(driver).move_to_element(search).click(search).perform()
-
     time.sleep(2)
     notes = "Success! "
     if bestCandidate[3] or bestCandidate[3] or noteThis:
-        logging.info("needs info")
-        table = driver.find_element_by_id(
-                                          'ctl00_ContentPlaceHolderVANPage_gvList')  # apparently this must be refreshed...
-                                          tbody = table.find_elements_by_tag_name('tbody')[0]
-                                          rows = tbody.find_elements_by_tag_name('tr')
-                                          infoAdder(bestCandidate[4], bestCandidate[3], rows[bestCandidate[1]].find_elements_by_tag_name('a')[0], email, number, bestCandidate[2], noteThis)
-                                          notes += "We added"
-                                          if bestCandidate[2]:
-                                              notes += " a shiny new Phone Number..."
-                                          if bestCandidate[3]:
-                                              notes += " an email address..."
-                                              if noteThis:
-                                                  notes += " some notes..."
-
+      logging.info("needs info")
+      table = driver.find_element_by_id('ctl00_ContentPlaceHolderVANPage_gvList')  # apparently this must be refreshed...
+      tbody = table.find_elements_by_tag_name('tbody')[0]
+      rows = tbody.find_elements_by_tag_name('tr')
+      infoAdder(bestCandidate[4], bestCandidate[3], rows[bestCandidate[1]].find_elements_by_tag_name('a')[0], email, number, bestCandidate[2], noteThis)
+      notes += "We added"
+      if bestCandidate[2]:
+          notes += " a shiny new Phone Number..."
+      if bestCandidate[3]:
+          notes += " an email address..."
+      if noteThis:
+          notes += " some notes..."
     logging.info("Bob has been found! Yay!")
     return [True, notes]
     # surveyButton = driver.find_element_by_id("ctl00_ContentPlaceHolderVANPage_ctl38_UpdatePanel_SurveyQuestions_EID295C3E9B_ExpandButton")
@@ -440,10 +432,8 @@ def addNotes(link, notes, name):
             time.sleep(1)
             optsHolder = opts.find_element_by_xpath('..')
             noteBox = optsHolder.find_elements_by_tag_name("textarea")
-            webdriver.ActionChains(driver).move_to_element(noteBox).click(noteBox).send_keys(
-                                                                                        notes).perform()
+            webdriver.ActionChains(driver).move_to_element(noteBox).click(noteBox).send_keys(notes).perform()
             return "Success!"
-
 
 def infoAdder(needsEmail, needsPhone, link, email, number, name, noteThis):
     webdriver.ActionChains(driver).move_to_element(link).click(link).perform()
@@ -481,12 +471,11 @@ def infoAdder(needsEmail, needsPhone, link, email, number, name, noteThis):
                 time.sleep(1)
                 optsHolder = opts.find_element_by_xpath('..')
                 noteBox = optsHolder.find_element_by_tag_name("textarea")
-                webdriver.ActionChains(driver).move_to_element(noteBox).click(noteBox).send_keys(
-                                                                                                 noteThis).perform()
-                                                                                                 saver = optsHolder.find_element_by_partial_link_text('Save')
-                                                                                                 webdriver.ActionChains(driver).move_to_element(saver).click(saver).perform()
-                                                                                                 print("successfully added notes")
-                                                                                                 noteThis = False
+                webdriver.ActionChains(driver).move_to_element(noteBox).click(noteBox).send_keys(noteThis).perform()
+                saver = optsHolder.find_element_by_partial_link_text('Save')
+                webdriver.ActionChains(driver).move_to_element(saver).click(saver).perform()
+                print("successfully added notes")
+                noteThis = False
 
         if needsEmail:
             if "Email" in opts.text:
@@ -499,16 +488,15 @@ def infoAdder(needsEmail, needsPhone, link, email, number, name, noteThis):
                     logging.info('searching through the tables. Current class: ' + " " + a.get_attribute("class"))
                     if len(a.find_elements_by_tag_name("input")):
                         if a.find_elements_by_tag_name("input")[0].get_attribute("class") == "input-element":
-                            logging.info('Found it!')
-                            emailBox = a.find_elements_by_tag_name("input")[0]
-                            webdriver.ActionChains(driver).move_to_element(emailBox).click(emailBox).send_keys(
-                                                                                                               email).perform()
-                                                                                                               saver = driver.find_elements_by_partial_link_text('Save New')[addedTally]
-                                                                                                               addedTally += 1
-                                                                                                               webdriver.ActionChains(driver).move_to_element(saver).click(saver).perform()
-                                                                                                               # alert_obj = driver.switch_to.alert  # is it an actual alert?
-                                                                                                               # alert_obj.accept()
-                            needsEmail = False
+                           logging.info('Found it!')
+                           emailBox = a.find_elements_by_tag_name("input")[0]
+                           webdriver.ActionChains(driver).move_to_element(emailBox).click(emailBox).send_keys(email).perform()
+                           saver = driver.find_elements_by_partial_link_text('Save New')[addedTally]
+                           addedTally += 1
+                           webdriver.ActionChains(driver).move_to_element(saver).click(saver).perform()
+                           # alert_obj = driver.switch_to.alert  # is it an actual alert?
+                           # alert_obj.accept()
+                           needsEmail = False
         if needsPhone:
             if "Phones" in opts.text:
                 logging.info("trying to add number...")
@@ -517,40 +505,21 @@ def infoAdder(needsEmail, needsPhone, link, email, number, name, noteThis):
                 time.sleep(1)
                 possibleInputs = driver.find_elements_by_tag_name("td")
                 for b in possibleInputs:
-                    logging.info('searching through the tables. Current class: ' + " " + str(len(
-                                                                                                 b.find_elements_by_tag_name("input"))))
-                                                                                                 if len(b.find_elements_by_tag_name("input")) >= 3:
-                                                                                                     logging.info('Found it!')
-                                                                                                     eForm = b.find_elements_by_tag_name("input")[
-                                                                                                                                                  0]  # I believe it's the first input element (as the first, I think, was the pop down box)
-                                                                                                         webdriver.ActionChains(driver).move_to_element(eForm).click(eForm).send_keys(
-                                                                                                                                                                                      number).perform()
-                                                                                                                                                                                      saveNew = driver.find_elements_by_partial_link_text("Save New")[addedTally]
-                                                                                                                                                                                          addedTally += 1
-                                                                                                                                                                                              webdriver.ActionChains(driver).move_to_element(saveNew).click(saveNew).perform()
-                                                                                                                                                                                              needsPhone = False
-            
-                '''
-                    wideRow2 = driver.find_elements_by_class_name('panel-heading')
-                    for opts2 in wideRow2:
-                    logging.info(opts2.text)
-                    if "Email" in opts2.text:
-                    eForm = opts2.find_elements_by_class_name("input-element")[0]
-                    eForm.send_keys(email)
-                    primaryButton = driver.find_elements_by_partial_link_text('Save All')[0]
-                    primaryButton.click()
-                    alert_obj = driver.switch_to.alert  # is it an actual alert?
-                    alert_obj.send_keys(uue007')  # press the enter key to escape the alert box that should come up.
-                    needsEmail = False'''
+                    logging.info('searching through the tables. Current class: ' + " " + str(len(b.find_elements_by_tag_name("input"))))
+                    if len(b.find_elements_by_tag_name("input")) >= 3:
+                         logging.info('Found it!')
+                         eForm = b.find_elements_by_tag_name("input")[0]  # I believe it's the first input element (as the first, I think, was the pop down box)
+                         webdriver.ActionChains(driver).move_to_element(eForm).click(eForm).send_keys(number).perform()
+                         saveNew = driver.find_elements_by_partial_link_text("Save New")[addedTally]
+                         wideRow2 = driver.find_elements_by_class_name('panel-heading')
         logging.info("loop finished! Heading home!")
         primaryButton.click()
         alert_obj = driver.switch_to.alert  # is it an actual alert?
-            alert_obj.accept()  # press the enter key to escape the alert box that should come up.
-            driver.get("https://members.lcv.org/QuickLookup.aspx?ReturnToList=1")  # it's the cheap way out
-            WebDriverWait(driver, 10).until(EC.title_contains("Quick Mark"))
-            logging.info('infoAdd out!')
-            return True
-
+        alert_obj.accept()  # press the enter key to escape the alert box that should come up.
+        driver.get("https://members.lcv.org/QuickLookup.aspx?ReturnToList=1")  # it's the cheap way out
+        WebDriverWait(driver, 10).until(EC.title_contains("Quick Mark"))
+        logging.info('infoAdd out!')
+        return True
 
 def addressing(address):
     try:
@@ -599,60 +568,56 @@ def personMaker(name, number, address, email, noteThis):
             os.system("say 'add a new person?'")
         else:
             os.system("tput bel")
-        userConfirmation = messagebox.askokcancel("Add New Person?", name[0] + " " + name[
-                                                                                          1] + " was not found. Shall we make a new person? Known data: " + str(number) + " " + address + " " + email,
-                                                  icon='warning')
-                                                  print(userConfirmation)
-                                                  root.update()
-                                                      if not userConfirmation:
-                                                          return [False, 'No one found. You chose to enter this one manually.']
-                                                      print("person maker actived!")
-                                                      parsedAddress = addressing(address)
+        userConfirmation = messagebox.askokcancel("Add New Person?", name[0] + " " + name[1] + " was not found. Shall we make a new person? Known data: " + str(number) + " " + address + " " + email,icon='warning')
+        print(userConfirmation)
+        root.update()
+        if not userConfirmation:
+            return [False, 'No one found. You chose to enter this one manually.']
+    print("person maker actived!")
+    parsedAddress = addressing(address)
     print(parsedAddress)
     newPerson = driver.find_elements_by_partial_link_text('Add New Person')[0]
     webdriver.ActionChains(driver).move_to_element(newPerson).click(newPerson).perform()
     WebDriverWait(driver, 10).until(EC.title_contains("New Person"))
     if "address1" in parsedAddress[0]:
-        street = driver.find_element_by_id(
-                                           "ctl00_ContentPlaceHolderVANPage_VanInputItem639_VanInputItem639AddressLine1")
-            street.clear()
-            street.send_keys(parsedAddress[0]["address1"])
-                                           elif "address2" in parsedAddress[0]:
-            street = driver.find_element_by_id(
-                                               "ctl00_ContentPlaceHolderVANPage_VanInputItem639_VanInputItem639AddressLine1")
-                                               street.clear()
-                                               street.send_keys(parsedAddress[0]["address2"])
-                                               if "city" in parsedAddress[0]:
-                                                   city = driver.find_element_by_id("ctl00_ContentPlaceHolderVANPage_VanInputItem639_VanInputItem639City")
-                                                   city.clear()
-                                                   city.send_keys(parsedAddress[0]["city"])
-                                               if "state" in parsedAddress[0]:
-                                                   state = driver.find_element_by_id("ctl00_ContentPlaceHolderVANPage_VanInputItem639_VanInputItem639State")
-                                                   state.clear()
-                                                   state.send_keys(parsedAddress[0]["state"])
+        street = driver.find_element_by_id("ctl00_ContentPlaceHolderVANPage_VanInputItem639_VanInputItem639AddressLine1")
+        street.clear()
+        street.send_keys(parsedAddress[0]["address1"])
+    elif "address2" in parsedAddress[0]:
+        street = driver.find_element_by_id("ctl00_ContentPlaceHolderVANPage_VanInputItem639_VanInputItem639AddressLine1")
+        street.clear()
+        street.send_keys(parsedAddress[0]["address2"])
+    if "city" in parsedAddress[0]:
+        city = driver.find_element_by_id("ctl00_ContentPlaceHolderVANPage_VanInputItem639_VanInputItem639City")
+        city.clear()
+        city.send_keys(parsedAddress[0]["city"])
+    if "state" in parsedAddress[0]:
+        state = driver.find_element_by_id("ctl00_ContentPlaceHolderVANPage_VanInputItem639_VanInputItem639State")
+        state.clear()
+        state.send_keys(parsedAddress[0]["state"])
     if "zip_code" in parsedAddress[0]:
         zip = driver.find_element_by_id("ctl00_ContentPlaceHolderVANPage_VanInputItem639_VanInputItem639Zip5")
         zip.clear()
-        if len(parsedAddress[0]["zip_code"]) == 5:
-            zip.send_keys(parsedAddress[0]["zip_code"])
-        if len(number) == 10:
-            # phoneBox = driver.find_elements_by_id("ctl00_ContentPlaceHolderVANPage_VanInputItem642_VanInputItem642_phone_VanInputItem642_phone_VanInputItem642Input")[0]
-            # new way
-            theLabel = driver.find_element_by_xpath("//label[contains(text(),'Home Phone')]")
-            theParent = theLabel.find_element_by_xpath('..')
-            phoneBox = theParent.find_element_by_tag_name("input")
-            webdriver.ActionChains(driver).move_to_element(phoneBox).click(phoneBox).send_keys(number).perform()
-        if email != "":
-            theLabel = driver.find_element_by_xpath("//label[contains(text(),'Email')]")
-            theParent = theLabel.find_element_by_xpath('..')
-            currentBox = theParent.find_element_by_tag_name("input")
-            webdriver.ActionChains(driver).move_to_element(currentBox).click(currentBox).send_keys(email).perform()
-        try:
-            saveIt = driver.find_element_by_id("ctl00_ContentPlaceHolderVANPage_ButtonNext")
-            webdriver.ActionChains(driver).move_to_element(saveIt).click(saveIt).perform()
-        except Exception:
-            nextButton = driver.find_element_by_id("ctl00_ContentPlaceHolderVANPage_ctl00_RefreshFilterButton")
-            webdriver.ActionChains(driver).move_to_element(nextButton).click(nextButton).perform()
+    if len(parsedAddress[0]["zip_code"]) == 5:
+        zip.send_keys(parsedAddress[0]["zip_code"])
+    if len(number) == 10:
+        # phoneBox = driver.find_elements_by_id("ctl00_ContentPlaceHolderVANPage_VanInputItem642_VanInputItem642_phone_VanInputItem642_phone_VanInputItem642Input")[0]
+        # new way
+        theLabel = driver.find_element_by_xpath("//label[contains(text(),'Home Phone')]")
+        theParent = theLabel.find_element_by_xpath('..')
+        phoneBox = theParent.find_element_by_tag_name("input")
+        webdriver.ActionChains(driver).move_to_element(phoneBox).click(phoneBox).send_keys(number).perform()
+    if email != "":
+        theLabel = driver.find_element_by_xpath("//label[contains(text(),'Email')]")
+        theParent = theLabel.find_element_by_xpath('..')
+        currentBox = theParent.find_element_by_tag_name("input")
+        webdriver.ActionChains(driver).move_to_element(currentBox).click(currentBox).send_keys(email).perform()
+    try:
+        saveIt = driver.find_element_by_id("ctl00_ContentPlaceHolderVANPage_ButtonNext")
+        webdriver.ActionChains(driver).move_to_element(saveIt).click(saveIt).perform()
+    except Exception:
+        nextButton = driver.find_element_by_id("ctl00_ContentPlaceHolderVANPage_ctl00_RefreshFilterButton")
+        webdriver.ActionChains(driver).move_to_element(nextButton).click(nextButton).perform()
     whereisBob(name, number, address, email, noteThis, False)
     return [True, "Added to VAN as a brand NEW PERSON!"]
 
