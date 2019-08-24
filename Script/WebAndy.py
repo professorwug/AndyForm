@@ -8,7 +8,7 @@ loginPage = "http://van_login.your_organization.org"
 andyPath = "/Users/adjourner/Desktop/AndyForm Generation/"
 # should we ask before adding new people? "True" means we will ask; "False" means we won't.
 # (Make sure they are capitalized)
-askBeforeBirthing = False
+askBeforeBirthing = True
 # should AndyForm use the speech synthesizer to say things like "Add a new person?" We recommend you set this to True; it lets you wander away from your computer while data is being processed.
 # But if you find it annoying, change it to False, and we'll just make a "beep" sound instead.
 andyCanTalk = True
@@ -178,7 +178,7 @@ def csvDaemon(filePath):
         results = []
         for row in readCSV:
             if row[0].strip() != '' and row[0] != 'Name':
-                logging.info(row)
+                logging.info(repr(row))
                 name = row[0].replace('\n', ' ')
                 name = name.strip()
                 name = name.split(' ')
@@ -243,7 +243,7 @@ def login():
     # And navigate into Quick Mark
     quickMark = driver.find_element_by_link_text("Quick Mark")
     quickMark.click()
-    logging.info(driver.title)
+    logging.info(repr(driver.title))
 
     WebDriverWait(driver, 10).until(EC.title_contains("Quick Mark"))
 
@@ -256,7 +256,7 @@ def doesItMatch(name, number, address, email, currName, currAddress, currCity, c
     Is the last name correct? Is either city, state, address, or number currect?  Is it within a "similarity threshold"?
     Each of these factors earns"""
     score = 0
-    logging.info("the curr: " + str(currName) + "the real: " + str(name))
+    logging.info("the curr: " + repr(currName) + "the real: " + repr(name))
 
     # Please be advised: These numbers are kind of random.
     if currName[0] == name[1]:
@@ -293,7 +293,7 @@ def initialize():
         # And navigate into Quick Mark
         quickMark = driver.find_element_by_link_text("Quick Mark")
         quickMark.click()
-        logging.info(driver.title)
+        logging.info(repr(driver.title))
 
         WebDriverWait(driver, 10).until(EC.title_contains("Quick Mark"))
 
@@ -334,7 +334,7 @@ def whereisBob(name, number, address, email, noteThis, nationalLook):
         logging.debug("Initializing ; )")
         initialize()  # loads the quick mark page, if not loaded
 
-    logging.info(driver.title)
+    logging.info(repr(driver.title))
 
     # enable (or disable) search of all people
     if nationalLook:
@@ -358,7 +358,7 @@ def whereisBob(name, number, address, email, noteThis, nationalLook):
     table = driver.find_element_by_id('ctl00_ContentPlaceHolderVANPage_gvList')
     tbody = table.find_elements_by_tag_name('tbody')[0]
     rows = tbody.find_elements_by_tag_name('tr')
-    logging.info(str(rows))
+    logging.info(repr(rows))
     if (len(rows) == 0 or len(rows[0].find_elements_by_tag_name('td')) < 2):  # the latter case is for the one row that says "person not found"
         logging.info("No one found.")
         if nationalLook:
@@ -378,22 +378,22 @@ def whereisBob(name, number, address, email, noteThis, nationalLook):
         currPhone = row.find_elements_by_tag_name('td')[6].text
         currPhone = ''.join(re.findall('\d+', currPhone))
         currEmail = row.find_elements_by_tag_name('td')[7].text
-        logging.info(str(
+        logging.info(repr(
             currName) + " " + currAddress + " " + currCity + " " + currState + " " + currPhone + " " + currEmail)  # prints text from the element
         needsPhone = False
         needsEmail = False
         score = doesItMatch(name, number, address, email, currName, currAddress, currCity, currState, currPhone,
                             currEmail)
-        logging.info('the found email and phone are,' + " " + currEmail + " " + currPhone)
+        logging.info('the found email and phone are,' + " " + repr(currEmail) + " " + repr(currPhone))
         if ratio(currEmail, email) < 0.7 and email:
             needsEmail = True
         if ratio(currPhone, number) < 0.7 and number:
             needsPhone = True
         auspiciousPersons.append([score, rows.index(row), currName, needsPhone, needsEmail])
         logging.info("we have a score of " + " " + str(score))
-    logging.info(str(auspiciousPersons))
+    logging.info(repr(auspiciousPersons))
     auspiciousPersons.sort()
-    logging.info("sorted:" + " " + str(auspiciousPersons))
+    logging.info("sorted:" + " " + repr(auspiciousPersons))
     bestCandidate = auspiciousPersons[-1]
     try:
         if bestCandidate[0] < 10:
@@ -443,12 +443,12 @@ def addNotes(link, notes, name):
     logging.info("We're adding notes! Waiting...")
     WebDriverWait(driver, 10).until(EC.title_contains(name))
     wideRow = driver.find_elements_by_class_name('panel-heading')
-    logging.info("And here are the wide rows:" + " " + wideRow)
+    logging.info("And here are the wide rows:" + " " + repr(wideRow))
     primaryButton = driver.find_elements_by_partial_link_text('Save All')[0]
     addedTally = 0
     for i in range(len(wideRow)):
         opts = driver.find_elements_by_class_name('panel-heading')[i]
-        logging.info(" The opts text is " + " " + opts.text)
+        logging.info(" The opts text is " + " " + repr(opts.text))
         if "Notes" in opts.text:
             logging.info("found the notes button")
             emailButton = opts.find_elements_by_tag_name("input")[0]
@@ -471,7 +471,7 @@ def infoAdder(needsEmail, needsPhone, link, email, number, name, noteThis):
     addedTally = 0
     for i in range(len(wideRow)):
         opts = driver.find_elements_by_class_name('panel-heading')[i]
-        logging.info(" The opts text is " + opts.text)
+        logging.info(" The opts text is " + repr(opts.text))
         if not needsEmail and not needsPhone and not noteThis:
             logging.info("Finished! trying to go back")
             webdriver.ActionChains(driver).move_to_element(primaryButton).click(primaryButton).perform()
