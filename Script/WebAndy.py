@@ -673,10 +673,6 @@ def personMaker(name, number, address, email, noteThis):
     return [True, "Added to VAN as a brand NEW PERSON!"]
 
 
-# ---
-# csvDaemon("/Users/adjourner/Desktop/AndyForm_DataSheet_2019-06-08T17_11_03.718Z - Sheet1.csv")
-# whereisBob(["Kincaid","MacDonald"], "", "", "","Submitted a letter to the editor.",False)
-
 theySay = sys.argv
 logging.info(surveyName == theySay[1])
 surveyName = theySay[1].strip()
