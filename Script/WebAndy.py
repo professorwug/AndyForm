@@ -513,8 +513,7 @@ def infoAdder(needsEmail, needsPhone, link, email, number, name, noteThis):
                         if a.find_elements_by_tag_name("input")[0].get_attribute("class") == "input-element":
                             logging.info('Found it!')
                             emailBox = a.find_elements_by_tag_name("input")[0]
-                        webdriver.ActionChains(driver).move_to_element(emailBox).click(emailBox).send_keys(
-                                email).perform()
+                            webdriver.ActionChains(driver).move_to_element(emailBox).click(emailBox).send_keys(email).perform()
                             saver = driver.find_elements_by_partial_link_text('Save New')[addedTally]
                             addedTally += 1
                         webdriver.ActionChains(driver).move_to_element(saver).click(saver).perform()
