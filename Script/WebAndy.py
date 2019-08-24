@@ -424,7 +424,7 @@ def addNotes(link, notes, name):
     addedTally = 0
     for i in range(len(wideRow)):
         opts = driver.find_elements_by_class_name('panel-heading')[i]
-        logging.info(" The opts text is " + " " + unicodedata.normalize('NFKD',opts.text).encode("ascii","replace")))
+        logging.info(" The opts text is " + " " + unicodedata.normalize('NFKD',opts.text).encode("ascii","replace"))
         if "Notes" in opts.text:
             logging.info("found the notes button")
             emailButton = opts.find_elements_by_tag_name("input")[0]
