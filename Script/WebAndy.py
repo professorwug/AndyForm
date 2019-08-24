@@ -213,18 +213,12 @@ def csvDaemon(filePath):
     results.sort()  # brings the missing ones to the front.
     falseCount = 0
     for i in results:
-        reportCard += '''<tr class = "classcode"><td> TrueValue </td><td>Dan Speed</td><td>banana phone</td> <td>The Suburban Hotel</td><td> speedaway@dan.org </td><td> NOTES GO HERE </td></tr>'''.replace(
-                                                                                                                                                                                                             "TrueValue", str(i[-1])).replace("Dan Speed", ' '.join(i[1])).replace('banana phone', i[2]).replace(
-                                                                                                                                                                                                                                                                                                                 "The Suburban Hotel", i[3]).replace("speedaway@dan.org", i[4]).replace("classcode",
-                                                                                                                                                                                                                                                                                                                                                                                        str(i[0]).lower()).replace(
-                                                                                                                                                                                                                                                                                                                                                                                                                   "NOTES GO HERE", i[5])
-                                                                                                                                                                                                                                                                                                                                                                                                                   if not i[0]:
-                                                                                                                                                                                                                                                                                                                                                                                                                       falseCount += 1
-    reportCard = reportCard.replace("RIGHTNOW", str(now.ctime())).replace("SUCCESSFULPEOPLE",
-                                                                          str(len(results) - falseCount)).replace(
-                                                                                                                  "MISSINGPEOPLE", str(falseCount))
-                                                                                                                  reportCard += "</table></body></html>"
-                                                                                                                  browseLocal(reportCard)
+        reportCard += '''<tr class = "classcode"><td> TrueValue </td><td>Dan Speed</td><td>banana phone</td> <td>The Suburban Hotel</td><td> speedaway@dan.org </td><td> NOTES GO HERE </td></tr>'''.replace("TrueValue", str(i[-1])).replace("Dan Speed", ' '.join(i[1])).replace('banana phone', i[2]).replace("The Suburban Hotel", i[3]).replace("speedaway@dan.org", i[4]).replace("classcode",str(i[0]).lower()).replace("NOTES GO HERE", i[5])
+        if not i[0]:
+           falseCount += 1
+    reportCard = reportCard.replace("RIGHTNOW", str(now.ctime())).replace("SUCCESSFULPEOPLE",str(len(results) - falseCount)).replace( "MISSINGPEOPLE", str(falseCount))
+    reportCard += "</table></body></html>"
+    browseLocal(reportCard)
 
 
 def login():
@@ -295,32 +289,27 @@ def initialize():
         
         WebDriverWait(driver, 10).until(EC.title_contains("Quick Mark"))
 
-    survey = driver.find_element_by_id(
-                                   "ctl00_ContentPlaceHolderVANPage_WizardControl_VANDetailsItemQuickMarkType_VANInputItemDetailsItemQuickMarkType_QuickMarkType_0")
+    survey = driver.find_element_by_id("ctl00_ContentPlaceHolderVANPage_WizardControl_VANDetailsItemQuickMarkType_VANInputItemDetailsItemQuickMarkType_QuickMarkType_0")
     survey.click()
-    through = driver.find_element_by_id(
-                                        "ctl00_ContentPlaceHolderVANPage_WizardControl_StartNavigationTemplateContainerID_ButtonStartNext")
-                                        through.click()
-                                        
-                                        time.sleep(1)
-                                        
-                                        select = Select(driver.find_element_by_id(
-                                                                                  'ctl00_ContentPlaceHolderVANPage_WizardControl_VANDetailsItemAddSurveyQuestion_VANInputItemDetailsItemAddSurveyQuestion_AddSurveyQuestion'))
-                                        
-                                        # select by visible text
-                                        select.select_by_visible_text(actionName)
-                                        
-                                        select2 = Select(driver.find_element_by_id(
-                                                                                   'ctl00_ContentPlaceHolderVANPage_WizardControl_VANDetailsItemContactType_VANInputItemDetailsItemContactType_ContactType'))
-                                        
-                                        # select by visible text
-                                        select2.select_by_visible_text(actionType)
-                                        
-                                        finish = driver.find_element_by_id(
-                                                                           "ctl00_ContentPlaceHolderVANPage_WizardControl_FinishNavigationTemplateContainerID_ButtonFinishNext")
-                                        
-                                        webdriver.ActionChains(driver).move_to_element(finish).click(finish).perform()
-                                        time.sleep(1)
+    through = driver.find_element_by_id("ctl00_ContentPlaceHolderVANPage_WizardControl_StartNavigationTemplateContainerID_ButtonStartNext")
+    through.click()
+
+    time.sleep(1)
+
+    select = Select(driver.find_element_by_id('ctl00_ContentPlaceHolderVANPage_WizardControl_VANDetailsItemAddSurveyQuestion_VANInputItemDetailsItemAddSurveyQuestion_AddSurveyQuestion'))
+
+    # select by visible text
+    select.select_by_visible_text(actionName)
+
+    select2 = Select(driver.find_element_by_id('ctl00_ContentPlaceHolderVANPage_WizardControl_VANDetailsItemContactType_VANInputItemDetailsItemContactType_ContactType'))
+
+    # select by visible text
+    select2.select_by_visible_text(actionType)
+
+    finish = driver.find_element_by_id("ctl00_ContentPlaceHolderVANPage_WizardControl_FinishNavigationTemplateContainerID_ButtonFinishNext")
+
+    webdriver.ActionChains(driver).move_to_element(finish).click(finish).perform()
+    time.sleep(1)
 
 
 def whereisBob(name, number, address, email, noteThis, nationalLook):
